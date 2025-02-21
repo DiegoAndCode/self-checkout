@@ -8,7 +8,7 @@ interface OrdersPageProps {
   searchParams: Promise<{ cpf: string }>
 }
 
-const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
+export default async function OrdersPage({ searchParams }: OrdersPageProps) {
   const { cpf } = await searchParams;
 
   if(!cpf || !isValidCpf(cpf)) {
@@ -21,5 +21,3 @@ const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
     <OrderList orders={orders} />
   );
 };
-
-export default OrdersPage;

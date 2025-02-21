@@ -1,17 +1,18 @@
-"use client";
+'use client'
 
 import { Product } from "@prisma/client";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, useState } from "react";
 
-export interface CartProduct
-  extends Pick<Product, "id" | "name" | "price" | "imageUrl"> {
+export interface CartProduct 
+  extends Pick<Product, 'id' | 'name' | 'price' | 'imageUrl'> {
   quantity: number;
 }
 
 export interface ICartContext {
   isOpen: boolean;
-  products: CartProduct[];
+  products: CartProduct[]
   total: number;
+  totalQuantity: number;
   toggleCart: () => void;
   addProduct: (product: CartProduct) => void;
   decreaseProductQuantity: (productId: string) => void;
@@ -23,34 +24,38 @@ export const CartContext = createContext<ICartContext>({
   isOpen: false,
   products: [],
   total: 0,
+  totalQuantity: 0,
   toggleCart: () => {},
   addProduct: () => {},
   decreaseProductQuantity: () => {},
   increaseProductQuantity: () => {},
-  removeProduct: () => {},
+  removeProduct: () => {}
 });
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<CartProduct[]>([]);
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const total = products.reduce(
-    (acc, product) => acc + product.price * product.quantity,
-    0,
-  );
+  const [products, setProducts ] = useState<CartProduct[]>([]);
 
-  const toggleCart = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const total = products.reduce((acc, product) => {
+    return acc + product.price * product.quantity;
+  }, 0);
+
+  const totalQuantity = products.reduce((acc, product) => {
+    return acc + product.quantity;
+  }, 0);
+
+  const toggleCart = () => setIsOpen(!isOpen);
 
   const addProduct = (product: CartProduct) => {
-    const productIsAlreadyOnTheCart = products.some(
-      (prevProduct) => prevProduct.id === product.id,
-    );
-    if (!productIsAlreadyOnTheCart) {
-      return setProducts((prevProduct) => [...prevProduct, product]);
+    const productIsAlreadyInCart = products.some((prevProduct) => prevProduct.id === product.id);
+  
+    if (!productIsAlreadyInCart) {
+      return setProducts((prev) => [...prev, product]);
     }
-    setProducts((prevProduct) => {
-      return prevProduct.map((prevProduct) => {
+  
+
+    setProducts((prevProducts) => {
+      return prevProducts.map((prevProduct) => {
         if (prevProduct.id === product.id) {
           return {
             ...prevProduct,
@@ -63,38 +68,38 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const decreaseProductQuantity = (productId: string) => {
-    setProducts((prevProduct) => {
-      return prevProduct.map((prevProduct) => {
-        if (prevProduct.id === productId && prevProduct.quantity > 1) {
+    setProducts(prevProducts => {
+      return prevProducts.map((prevProduct) => {
+        if(prevProduct.id === productId && prevProduct.quantity > 1) {
           return {
             ...prevProduct,
-            quantity: prevProduct.quantity - 1,
-          };
+            quantity: prevProduct.quantity - 1
+          }
         }
         return prevProduct;
-      });
-    });
-  };
+      })
+    })
+
+  }
 
   const increaseProductQuantity = (productId: string) => {
-    setProducts((prevProduct) => {
-      return prevProduct.map((prevProduct) => {
-        if (prevProduct.id === productId) {
+    setProducts(prevProducts => {
+      return prevProducts.map((prevProduct) => {
+        if(prevProduct.id === productId) {
           return {
             ...prevProduct,
-            quantity: prevProduct.quantity + 1,
-          };
+            quantity: prevProduct.quantity + 1
+          }
         }
         return prevProduct;
-      });
-    });
-  };
+      })
+    })
+
+  }
 
   const removeProduct = (productId: string) => {
-    setProducts((prevProduct) => {
-      return prevProduct.filter((prevProduct) => prevProduct.id !== productId);
-    });
-  };
+    setProducts(prevProducts =>  prevProducts.filter(prevProduct => prevProduct.id !== productId))
+  }
 
   return (
     <CartContext.Provider
@@ -106,10 +111,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         decreaseProductQuantity,
         increaseProductQuantity,
         removeProduct,
-        total,
+        totalQuantity,
+        total
       }}
     >
       {children}
     </CartContext.Provider>
-  );
-};
+  )
+}
