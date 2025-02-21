@@ -4,13 +4,11 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/prisma";
 import ConsumptionMethodOption from "./components/consumption-method-option";
 
-
-
 interface RestaurantPageProps {
     params: Promise<{ slug: string }>;
 }
 
-const RestaurantPage  = async ({params}: RestaurantPageProps) => {
+export default async function RestaurantPage({params}: RestaurantPageProps) {
     const { slug } = await params;
    const restaurant = await db.restaurant.findUnique({ where: { slug } });
    if (!restaurant) {
@@ -60,9 +58,6 @@ const RestaurantPage  = async ({params}: RestaurantPageProps) => {
     </div>
     );
 };
-
-
-export default RestaurantPage;
 
  
 //server componentes que se renderizam no servidor

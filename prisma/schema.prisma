@@ -20,7 +20,7 @@ model Restaurant {
   description    String
   avatarImageUrl String
   coverImageUrl  String
-  menuCategaries MenuCategory[]
+  menuCategories MenuCategory[]
   products       Product[]
   orders         Order[]
   createdAt      DateTime       @default(now())
