@@ -14,68 +14,65 @@ datasource db {
 }
 
 model Restaurant {
-  id             String         @id @default(cuid())
+  id             String         @id @default(uuid())
   name           String
-  slug           String
+  slug           String         @unique
   description    String
-  avatarImageUrl   String
-  coverImageUrl    String
-  menuCategories MenuCategory[]
+  avatarImageUrl String
+  coverImageUrl  String
+  menuCategaries MenuCategory[]
   products       Product[]
-  ordes          Order[]
+  orders         Order[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
 
-//CRIANDO MENU DE LANCHES
 model MenuCategory {
-  id           String     @id @default(cuid())
+  id           String     @id @default(uuid())
   name         String
-  restaurantId String // Correção: O campo que referencia o restaurante deve ser a chave estrangeira (ID do restaurante)
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  // ESTAMOS DIZENDO QUE O MENU CATEGORY PERTENCE A UM RESTAURANTE 
-  // ESSE CAMPO NÃO VAI SER SALVO NO BANCO, É APENAS PARA O PRISMA SABER QUE ESSA TABELA REFERENCIA A DE CIMA
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela - Restaurant - OnDelete Cascade se eu deletar o restaurante, deleta a categoria
+  restaurantId String
   products     Product[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
 
 model Product {
-  id             String         @id @default(cuid())
+  id             String         @id @default(uuid())
   name           String
   description    String
   price          Float
-  imageUrl         String
+  imageUrl       String
   ingredients    String[]
   orderProducts  OrderProduct[]
-  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela Restaurant - OnDelete Cascade se eu deletar o restaurante, deleta o produto
   restaurantId   String
-  menuCategory   MenuCategory   @relation(fields: [menuCategoryId], references: [id], onDelete: Cascade)
+  menuCategory   MenuCategory   @relation(fields: [menuCategoryId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela MenuCategory - OnDelete Cascade se eu deletar a categoria, deleta o produto
   menuCategoryId String
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
 
 model Order {
-  id                Int               @id @default(autoincrement()) //isso aqui vai ser basicamente o número do pedido
-  total             Float
+  id                Int               @id @default(autoincrement())
   status            OrderStatus
+  total             Float
+  consumptionMethod ConsumptionMethod
   orderProducts     OrderProduct[]
+  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela Restaurant - OnDelete Cascade se eu deletar o restaurante, deleta o pedido
   restaurantId      String
-  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
-  consumptionMethod ConsumptionMethod
 }
 
 model OrderProduct {
-  id        String   @id @default(cuid())
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String
-  oder      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId   Int
+  id        Int      @id @default(autoincrement())
   quantity  Int
-  price     Float
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela Product - OnDelete Cascade se eu deletar o produto, deleta o pedido
+  productId String
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela Order - OnDelete Cascade se eu deletar o pedido, deleta o produto
+  prince    Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -83,10 +80,12 @@ model OrderProduct {
 enum OrderStatus {
   PENDING
   IN_PREPARATION
-  FINISHED
+  CONFIRMED
+  DELIVERED
+  CANCELED
 }
 
 enum ConsumptionMethod {
-  TAKEWAY
   DINE_IN
+  TAKEAWAY
 }
