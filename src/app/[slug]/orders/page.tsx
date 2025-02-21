@@ -1,8 +1,25 @@
+import { getOrderByCpf } from "@/data/get-order-by-cpf";
+import { isValidCpf } from "@/helpers/cpf";
 
-export default function OrdersPage() {
-    return (
-        <div>
-            <h1>Orders Page</h1>
-        </div>
-    );
+import CpfForms from "./components/cpf-form";
+import OrderList from "./components/order-list";
+
+interface OrdersPageProps {
+  searchParams: Promise<{ cpf: string }>
 }
+
+const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
+  const { cpf } = await searchParams;
+
+  if(!cpf || !isValidCpf(cpf)) {
+    return <CpfForms />
+  }
+
+  const orders = await getOrderByCpf(cpf);
+
+  return (
+    <OrderList orders={orders} />
+  );
+};
+
+export default OrdersPage;

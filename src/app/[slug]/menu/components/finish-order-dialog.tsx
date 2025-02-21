@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { isValidCpf } from "../helpers/cpf";
+import { isValidCpf } from "../../../../helpers/cpf";
 import { useContext, useTransition } from "react";
 import { CartContext } from "../contexts/cart";
 import { useParams, useSearchParams } from "next/navigation";

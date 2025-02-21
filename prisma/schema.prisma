@@ -82,9 +82,7 @@ model OrderProduct {
 enum OrderStatus {
   PENDING
   IN_PREPARATION
-  CONFIRMED
-  DELIVERED
-  CANCELED
+  FINISHED
 }
 
 enum ConsumptionMethod {
