@@ -61,6 +61,8 @@ model Order {
   orderProducts     OrderProduct[]
   restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela Restaurant - OnDelete Cascade se eu deletar o restaurante, deleta o pedido
   restaurantId      String
+  customerName      String
+  customerCpf     String
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 }
@@ -72,7 +74,7 @@ model OrderProduct {
   productId String
   orderId   Int
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade) //Tem relacionamento com a tabela Order - OnDelete Cascade se eu deletar o pedido, deleta o produto
-  prince    Float
+  price    Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
