@@ -1,8 +1,8 @@
 import { getOrderByCpf } from "@/data/get-order-by-cpf";
 import { isValidCpf } from "@/helpers/cpf";
 
-import CpfForms from "./components/cpf-form";
-import OrderList from "./components/order-list";
+import CpfForms from "./_components/cpf-form";
+import OrderList from "./_components/order-list";
 
 interface OrdersPageProps {
   searchParams: Promise<{ cpf: string }>

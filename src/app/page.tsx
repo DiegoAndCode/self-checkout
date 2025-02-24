@@ -1,12 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
   return (
-    <div>
-      <h1>Hello Word</h1>
-      <Button>teste</Button>
-      <Input placeholder="Bora" />
-    </div>
+    redirect('/mcdonalds')
   );
 };
